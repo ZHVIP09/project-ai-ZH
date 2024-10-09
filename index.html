@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ku">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرۆژەی ئەی ئای کە درووستکراوە لەلایەن بەرێز زانا</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #002fff, #ff0000);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            perspective: 1000px;
+            animation: gradient-animation 15s ease infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% { background: linear-gradient(135deg, #ff0000, #0400ff); }
+            50% { background: linear-gradient(135deg, #ac1b1b, #0084ff); }
+            100% { background: linear-gradient(135deg, #00ffff, #ff0040); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: #00ffea;
+            text-shadow: 0 0 15px #00ffea, 0 0 30px #00ffea;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 15px #00ffea; }
+            100% { text-shadow: 0 0 30px #00ffea, 0 0 60px #00ffea; }
+        }
+
+        /* Button Styles */
+        .luxury-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #00ffea, #00ccff);
+            border: none;
+            color: #fff;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 0 20px rgba(0, 255, 234, 0.7), 0 0 40px rgba(0, 204, 255, 0.7);
+            margin: 10px;
+        }
+
+        .luxury-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 234, 1), 0 0 50px rgba(0, 204, 255, 1);
+        }
+
+        /* Chat Styles */
+        .chat-box {
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 255, 234, 0.5);
+            padding: 10px;
+            margin: 20px;
+        }
+
+        .chat-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: opacity 1s;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 255, 234, 0.8);
+            border-radius: 50%;
+            position: absolute;
+            pointer-events: none;
+            transition: width 0.3s, height 0.3s;
+            box-shadow: 0 0 10px rgba(0, 255, 234, 0.7);
+        }
+
+        body:hover .custom-cursor {
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 255, 234, 1);
+        }
+
+        /* Particle Animation */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: rgba(0, 255, 234, 0.8);
+            border-radius: 50%;
+            animation: particleMove 10s linear infinite;
+        }
+
+        @keyframes particleMove {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(1000px) translateX(500px); }
+        }
+
+        /* Hologram Styles */
+        .hologram {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 234, 0.5);
+            border-radius: 50%;
+            animation: hologramPulse 1.5s infinite alternate;
+            box-shadow: 0 0 30px rgba(0, 255, 234, 0.7);
+        }
+
+        @keyframes hologramPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Loading Styles */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <h1>جاورێ بکە بۆ جونەژورەوە...</h1>
+    </div>
+    
+    <h1>بەخێربێن بۆ ZH AI</h1>
+
+    <button class="luxury-btn" onclick="startRecognition()">پەیوەندیدان</button>
+    <button class="luxury-btn" onclick="sendMessage()">ناردنی پەیام</button>
+
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="particles"></div>
+
+    <!-- Hologram Icons -->
+    <div class="hologram" style="top: 20%; left: 10%;"></div>
+    <div class="hologram" style="top: 50%; left: 80%;"></div>
+    <div class="hologram" style="top: 80%; left: 30%;"></div>
+
+    <script>
+        const loadingScreen = document.getElementById('loading');
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+        }, 2000); // Duration for loading screen (2 seconds)
+
+        const cursor = document.getElementById('customCursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.pageX + 'px';
+            cursor.style.top = e.pageY + 'px';
+        });
+
+        const chatBox = document.getElementById('chatBox');
+
+        const startRecognition = () => {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US'; // Set to English for broader understanding
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                const command = event.results[0][0].transcript.toLowerCase();
+                handleVoiceCommand(command);
+            };
+
+            recognition.onend = () => { console.log('پەیوەندیدا لە قەسەکردن.'); };
+            recognition.onerror = (event) => { console.error('هەڵەیەک ڕوویدا لە قەسەکردن: ' + event.error); };
+        };
+
+        const sendMessage = () => {
+            const userMessage = "How can I learn more about Kurdish music?";
+            addChatMessage(userMessage);
+            handleVoiceCommand(userMessage);
+        };
+
+        const handleVoiceCommand = (command) => {
+            console.log('Command received: ', command);
+            let message = '';
+
+            // Adding more commands
+            if (command.includes('kurdish food')) {
+                message = "Typical Kurdish food includes dolma, kofta, flatbreads, and more. Meals are often shared on the floor.";
+            } else if (command.includes('kurdish music')) {
+                message = "Kurdish music blends tradition with modernity, featuring classical instruments like the daf and zurna.";
+            } else if (command.includes('kurdish literature')) {
+                message = "Kurdish literature is rich with folklore, poetry, and stories that reflect the culture and history of the Kurdish people.";
+            } else if (command.includes('kurdish history')) {
+                message = "Kurdish history is vast, marked by the struggle for autonomy and cultural preservation. Major historical figures include Salah ad-Din.";
+            } else if (command.includes('kurdish clothing')) {
+                message = "Traditional Kurdish clothing often features vibrant colors, with men wearing shal u shepik and women in colorful dresses    .";
+            } else if (command.includes('tell me a story')) {
+                message = "Once upon a time in a Kurdish village, people gathered to celebrate Newroz, symbolizing the arrival of spring and new beginnings.";
+            } else if (command.includes('kurdish dance')) {
+                message = "Kurdish dances are lively and often performed in groups, celebrating cultural heritage and community spirit.";
+            } else {
+                message = "بەخێربێن! سەرچاوەیەکی نوێ لەسەر ئەم شتانی بزانید: کوردی، خواردن، مێژووی کوردی، ئەدەبی کوردی، و پەیامی نوێ.";
+            }
+
+            addChatMessage(message);
+            speak(message);
+        };
+
+        const addChatMessage = (message) => {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message';
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
+        };
+
+        const speak = (message) => {
+            const speech = new SpeechSynthesisUtterance(message);
+            speech.lang = 'ku-KU'; // Kurdish language
+            window.speechSynthesis.speak(speech);
+        };
+
+        // Particle Animation Generation
+        const createParticles = () => {
+            for (let i = 0; i < 100; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                document.querySelector('.particles').appendChild(particle);
+            }
+        };
+
+        createParticles();
+    </script>
+</body>
+</html>
